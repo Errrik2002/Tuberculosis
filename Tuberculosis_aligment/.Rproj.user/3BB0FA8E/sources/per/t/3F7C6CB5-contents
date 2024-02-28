@@ -695,6 +695,30 @@ dev.off()
 
 
 
+##################### PE_PGRS47 ##############
+
+PE_PGRS47 <- readAAStringSet("Data/PE_PGRS47/sequence (2).fasta")
+
+PE_PGRS47_MSA <- msa(PE_PGRS47)
+
+sink("Results/PE_PGRS47/MSA_PE_PGRS47.txt")
+print(PE_PGRS47_MSA, show="complete")
+sink()
+
+
+class(PE_PGRS47_MSA) <- "AAMultipleAlignment"
+
+
+pdf("Results/PE_PGRS47/rplotT.pdf", width = 40, height = 20)
+# 2. Create the plot
+ggmsa(PE_PGRS47_MSA, start = 1, end = 550, char_width = 0.5, seq_name = T)+
+  geom_seqlogo()+
+  geom_msaBar()
+# 3. Close the file
+dev.off()
+
+
+
 
 
 

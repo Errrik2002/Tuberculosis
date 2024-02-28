@@ -1,0 +1,18 @@
+INFO [2024-02-21 14:28:41] [[1]]
+INFO [2024-02-21 14:28:41] list(citosol = citosol, membrana = membrana, division = division, 
+INFO [2024-02-21 14:28:41]     pared = pared, metabolismo = metabolismo, superficie = superficie, 
+INFO [2024-02-21 14:28:41]     secretion = secretion)
+INFO [2024-02-21 14:28:41] 
+INFO [2024-02-21 14:28:41] $alpha
+INFO [2024-02-21 14:28:41] c(0.5, 0.5)
+INFO [2024-02-21 14:28:41] 
+INFO [2024-02-21 14:28:41] $cat.cex
+INFO [2024-02-21 14:28:41] [1] 1.5
+INFO [2024-02-21 14:28:41] 
+INFO [2024-02-21 14:28:41] $cex
+INFO [2024-02-21 14:28:41] [1] 1.5
+INFO [2024-02-21 14:28:41] 
+INFO [2024-02-21 14:28:41] $filename
+INFO [2024-02-21 14:28:41] NULL
+INFO [2024-02-21 14:28:41] 
+ERROR [2024-02-21 14:28:41] Incorrect number of elements.

@@ -1,12 +1,12 @@
 {
-    "id": "8EA21471",
-    "path": "C:/Users/DELL/Desktop/GitHub/Tuberculosis/Tuberculosis_aligment/Results/PPE2_MSA/PPE2MSA.txt",
-    "project_path": "Results/PPE2_MSA/PPE2MSA.txt",
+    "id": "DFB36C2D",
+    "path": "C:/Users/DELL/Desktop/GitHub/Tuberculosis/Tuberculosis_aligment/Results/PE_PGRS57/PE_PGRS57_MSA.txt",
+    "project_path": "Results/PE_PGRS57/PE_PGRS57_MSA.txt",
     "type": "text",
-    "hash": "3656939524",
+    "hash": "2636318384",
     "contents": "",
     "dirty": false,
-    "created": 1709080240345.0,
+    "created": 1709695875309.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
@@ -14,11 +14,11 @@
         "Source": "Source"
     },
     "folds": "",
-    "lastKnownWriteTime": 1709080226,
+    "lastKnownWriteTime": 1709695869,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1709080226,
+    "last_content_update": 1709695869,
     "read_only": false,
     "read_only_alternatives": []
 }

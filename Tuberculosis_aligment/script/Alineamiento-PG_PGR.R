@@ -399,6 +399,7 @@ dev.off()
 
 ###############################################
 ############ PG_PGRS14 ###################
+#IMPORTANTE EN LA RESPUESTA INMUNE
 #SALEN MUCHAS VARIANTES, Y OTRAVEZ UNA BCG DE MEXICO
 
 
@@ -619,6 +620,7 @@ dev.off()
 
 ##################################
 ###########PE_PGRS62##############
+#IMPORTANCIA INMUNE
 ###### TAMBIEN MUY CONSERVADA ###############
 
 
@@ -720,6 +722,53 @@ dev.off()
 
 
 ################################
+#5 DE MARZO DEL 2024
+#IMPORTANCIA INMUNOGENICA
+############# PE_PEGRS57###############
+
+PE_PGRS57 <- readAAStringSet("Data/PE_PGRS57/sequence (2).fasta")
+
+PE_PGRS57_MSA <- msa(PE_PGRS57)
+
+sink("Results/PE_PGRS57/PE_PGRS57_MSA.txt")
+print(PE_PGRS57_MSA, show="complete")
+sink()
+
+
+class(PE_PGRS57_MSA) <- "AAMultipleAlignment"
+
+
+pdf("Results/PE_PGRS57/rplotT.pdf", width = 40, height = 20)
+# 2. Create the plot
+ggmsa(PE_PGRS57_MSA, start = 1600, end = 1700, char_width = 0.5, seq_name = T)+
+  geom_seqlogo()+
+  geom_msaBar()
+# 3. Close the file
+dev.off()
+
+#########################
+
+
+
+
+
+
+#PE_PGRS19
+
+#PE_PGRS61
+
+
+#PE_PGRS20
+
+
+#PE_PGRS41
+
+
+#PE_PGRS38
+
+
+
+#
 
 
 

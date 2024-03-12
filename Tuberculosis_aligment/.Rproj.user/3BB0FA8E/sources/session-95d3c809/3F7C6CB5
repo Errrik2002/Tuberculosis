@@ -3,7 +3,7 @@
     "path": "C:/Users/DELL/Desktop/GitHub/Tuberculosis/Tuberculosis_aligment/script/Alineamiento-PG_PGR.R",
     "project_path": "script/Alineamiento-PG_PGR.R",
     "type": "r_source",
-    "hash": "711481259",
+    "hash": "2263107993",
     "contents": "",
     "dirty": false,
     "created": 1708704520028.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "748,0",
-        "scrollLine": "725"
+        "cursorPosition": "803,0",
+        "scrollLine": "788"
     },
     "folds": "",
-    "lastKnownWriteTime": 1709695961,
+    "lastKnownWriteTime": 1709749013,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1709695961841,
+    "last_content_update": 1709749013863,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -1,0 +1,83 @@
+model_levadura <- aov(vol~levadura*harina, Levadura)
+summary(model_levadura) ## Resumen de nuestro ANOVA, gracias al valor de de p (5.26e-05) en la interaccion levadura:harina, podemos darnos cuenta que la 
+## interaccion entre la levadura y el tipo de harina, causa la variacion en nuestra variable de respuesta, que es el volumen de co2 producido.
+summary.lm(model_levadura)# Resumen que nos da mas informacion, poder imaginarnos nuestro boxplot con los valores de Min, 1Q, Median, 3Q y Max. De igual forma
+## tambien nos proporciona los valores de R2 (0.2713), p (0.0001806) y grados de libertad (53), gracias al valor de p podemos rechazar nuestra Ho.
+
+TukeyHSD(model_levadura)## Prueba Tukey que nos permite saber cual de nuestras Ha tenemos que aceptar.
+## En este caso las hipotesis alternativas que muestran valores de p aceptables son:
+#tradipan:selecta-tradipan:great_value p (0.0003044)
+## El volumen de co2 producido por la levadura tradipan con harina selecta es diferente al de la levadura tradipan con great value
+#tradipan:great_value-chef:great_value p (0.0014554)
+## El volumen de co2 producido por la levadura tradipan y la harina great value, difiere del producido por la levadura saf instant y la harina great value
+
+## Este script generara 4 graficas en una misma pagina, estas graficas nos permitiran si los supuestos del ANOVA se cumplen
+layout(matrix(c(1,2,3,4),2,2))
+plot(model_levadura) 
+layout(matrix(c(1),1,1))
+# En las graficas de Residuals vs Fitted podemos observar que se cumple la homogeneidad de la varianza de nuestros residuales, ya que la linea recta que se observa
+## no presenta una inclinacion considerable
+# En NormalQ-Q podemos observar que nuestros residuales si se ajustan a una distribucion normal, es por ello que se ve una pendiente que va de esquina a esquina
+# Por ultimo en Residual vs Leverage, podemos apreciar que no tenemos ningun valor que altere nuestros resultados
+
+library(Rmisc) ## Invocamos a nuestra funcion para poder utilizarla
+resumenharina <- summarySE(Levadura, measurevar = "vol", groupvars = "harina")
+resumenharina
+## Creamos un objeto para almacenar los datos que provee la funcion summarySE, como el intervalo de confianza, lo necesitamos para generar nuestras lineas de error (bigotes),
+## que represantan nuestro valor minimo y maximo
+library(ggplot2)
+graph_volharina <- ggplot(resumenharina, aes(x=harina, y=vol)) + ## la grafica usara a los 2 niveles de harina como eje x, y usara a los del volumen como Y
+  labs(title= "Volumen de Co2 producido harinas")+ ## Anotaciones que queremos hacer en nuestra grafica, titulo y nombre de ambos ejes
+  geom_bar(position=position_dodge(), stat="identity", fill = c("green", "purple")) + ## Generamos nuestra grafica de barras, dodge evita que las barras se sobrepngan y fill indica el color de las barras
+  geom_errorbar(aes(ymin=vol-ci, ymax=vol+ci), width=.2,position=position_dodge(.9))+ ## Bigotes de la grafica, tomaras el valor del volumen y le restaras el ci para generar el valor minimo, lo mismo para el maximo, solo que se suma el ci
+xlab("Marcas de harina")+
+  ylab("Volumen de di?xido de carbono")+
+  theme(
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    axis.line = element_line(colour = "black"))
+graph_volharina
+## Graficas de barras en donde podemos si existe una diferencia entre el volumen de co2 producido dependiendo del tipo de harina
+
+resumenlev <- summarySE(Levadura, measurevar = "vol", groupvars = "levadura")
+resumenlev
+
+graph_volevadura <- ggplot(resumenlev, aes(x=levadura, y=vol)) +
+  labs(title= "Volumen de Co2 producido por levaduras")+
+  geom_bar(position=position_dodge(), stat="identity", fill = c("red", "blue")) +
+  geom_errorbar(aes(ymin=vol-ci, ymax=vol+ci), width=.2,position=position_dodge(.9))+
+  xlab("Marcas de levadura")+
+  ylab("Volumen de di?xido de carbono")+ #se agrega la ultimas lineas de codigo para simple estetica d elas graficas
+  theme(
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    axis.line = element_line(colour = "black"))
+
+graph_volevadura
+
+## Graficas de barras en donde podemos si existe una diferencia entre el volumen de co2 producido dependiendo del tipo de levadura
+
+resumen_levhar <- summarySE(Levadura, measurevar = "vol", groupvars = c("levadura", "harina"))
+resumen_levhar
+
+graph_levhar <- ggplot(resumen_levhar, aes(x= harina, y= vol, colour=levadura, group= levadura)) + # Indicamos que mi eje x tendra a mis dos niveles de harina, el y mis valores de volumen, y colour nos indica que generara una linea por cada tipo de levadura
+  labs(title= "Volumen de Co2 producido por combinaci?n")+
+  geom_errorbar(aes(ymin=vol-ci, ymax=vol+ci), width=.1, position= position_dodge(0.1)) + 
+  geom_line(position= position_dodge(0.1)) + ## Crea una recta, utilizando un patron en la nube de puntos, de tal forma que sea la recta que pasa mas cerca por todos ellos, el metodo por el cual se genera esta recta es lineal por eso utilizamos lm
+  geom_point(position= position_dodge(0.1))+ xlab("marcas de harina")+
+  ylab("volumen de di?xido de carbono")+
+  theme(
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    axis.line = element_line(colour = "black"))
+  
+  
+  
+  
+graph_levhar

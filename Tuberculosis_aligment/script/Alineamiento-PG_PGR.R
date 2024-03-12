@@ -747,18 +747,63 @@ ggmsa(PE_PGRS57_MSA, start = 1600, end = 1700, char_width = 0.5, seq_name = T)+
 dev.off()
 
 #########################
-
-
-
-
-
-
+#IMPORTANCIA INMUNE
 #PE_PGRS19
 
-#PE_PGRS61
+PE_PGRS19 <- readAAStringSet("Data/PG_PGRS19/sequence (2).fasta")
+
+PE_PGRS19_MSA <- msa(PE_PGRS19)
+
+sink("Results/PG_PGRS19/PE_PGRS19_MSA.txt")
+print(PE_PGRS19_MSA, show="complete")
+sink()
 
 
-#PE_PGRS20
+class(PE_PGRS19_MSA) <- "AAMultipleAlignment"
+
+
+
+pdf("Results/PG_PGRS19/rplotT.pdf", width = 40, height = 20)
+# 2. Create the plot
+ggmsa(PE_PGRS19_MSA, start = 120, end = 240, char_width = 0.5, seq_name = T)+
+  geom_seqlogo()+
+  geom_msaBar()
+# 3. Close the file
+dev.off()
+
+############################################
+################ PE_PGRS61 ###################
+#IMPORTANCIA INMUNE
+###########################
+
+
+PE_PGRS61 <- readAAStringSet("Data/PE_PGRS61/sequence (2).fasta")
+
+PE_PGRS61_MSA <- msa(PE_PGRS61)
+
+sink("Results/PE_PGRS61/PE_PGRS19_MSA.txt")
+print(PE_PGRS61_MSA, show="complete")
+sink()
+
+
+class(PE_PGRS61_MSA) <- "AAMultipleAlignment"
+
+
+
+pdf("Results/PE_PGRS61/rplot.pdf", width = 40, height = 20)
+# 2. Create the plot
+ggmsa(PE_PGRS61_MSA, start = 80, end = 160, char_width = 0.5, seq_name = T)+
+  geom_seqlogo()+
+  geom_msaBar()
+# 3. Close the file
+dev.off()
+
+################################
+## Importancia inmune
+############ PE_PGRS20 ##############
+
+
+
 
 
 #PE_PGRS41

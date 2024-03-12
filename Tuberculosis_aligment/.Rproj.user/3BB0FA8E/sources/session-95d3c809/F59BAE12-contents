@@ -1,0 +1,113 @@
+library(ggplot2)
+library(Rmisc)
+library(lattice)
+library(plyr) ####Se cargan todas los paquetes que se van a requerir para hacer el analisis
+
+#anteriormente debimos hacer nuestra base de datos, en excel, posterior se guarda la base de datos en .csv  y la cargamos en import 
+#base de datos: base_ansiedad
+base_ansiedad #Hacemos la visualizaci?n de nuestras base de datos, para ver si cargo bien y si, si cargo bien
+
+
+analisis_v_ansiedad <- aov(ansiedad ~ edad + genero + genero*edad, data = base_ansiedad) #creamos un objeto donde se se guardara nuestro analisis de varianza
+#para hacer la observacion del objeto debemos colocar summary() y dentro de este nuestro objeto de analisis
+
+summary(analisis_v_ansiedad)## de esta manera nos mostrara la informaci?n organizada en una tabla de ANOVA
+##En la tabla podemos observar resultados muy similares a los que se obtuvieron en la tabla que se hizo a mano
+#Ademas en R ya nos muestra el valor de P con el que vamos a comparar el valor de F
+#            Df Sum Sq Mean Sq F value   Pr(>F)    
+#edad         2  54.14  27.069  169.77 1.58e-09 *** 
+#
+#debido a que el valor de F es mucho m?s alto que el valor de P, rechazamos la hipotesis nula en donde el promedio de ansiedad en las diferentes edades es la misma
+#asi que se rechaza la hipotesis nula y se acepta la hipotesis alternativa, sin embargo aun no sabemos cual de las Ha aceptamos
+
+#Lo mismo sucede en genero, el valor de F es mucho mayor que el valor de P, por lo tanto rechazamos la Ho y aceptamos la Ha
+#aqui no sucederia lo de no saber que Ha escoger, pues al ser de solo dos niveles el factor, solo tenemos la opci?n de que el promedio de ansiedad en genero en hombre y mujer no son iguales
+
+
+summary.lm(analisis_v_ansiedad) #Con esta visualizaci?n nos da informaci?n extra del analisis, nos ayuda a poder imaginar una visualizaci?n del boxplot
+#Ya que resalta los valores minimos y maximos, que s eobtendr?a el boxplot (el limite de los bigotes), ademas proporciona valores de los cuartiles del boxplot
+#debido a que el cuartil 1 y el cuartil 3 son similares, (pero con signo diferente), podemos decir que es una caja.
+
+#Uno de los datos importantes es el Adjusted R-squared, explica que tan bueno es el modelo, solo va de 0 a 1, en este caso el valor es de 0.96
+#esto quiere decir que el modelo logra explicar el 96% de causalidad de ansiedad.
+
+layout(matrix(c(1,2,3,4),2,2)) #estos nos permitira dividir la ventana dde plots en 4 partes para poder hacer la observacion de las 4 graficas del analisis
+plot(analisis_v_ansiedad) #imprimimos las imagenes para determinar los supuestos del ANOVA
+layout(matrix(c(1),1,1)) #volvemos a colocar, para que nuestra ventana de plots no este dividida
+
+#En las graficas de Residuals vs Fitted y Scale-Location, nos ayuda a indicar que las varianzas son homogeneas
+#con la observaci?n de la de la linea podemos determinar si hay varianza o no, con la pendiente de la linea nos indica el nivel de varianza, entre menos pendiente haya menos varianza habra  
+
+#En la grafica Normal Q-Q nos ayuda a conocer si los residuales tienen una distribuci?n normal, si la mayoria de datos en la grafica
+#caen sobre la linea punteada quiere decir que los residuales si tienen una distribucion normal, en este caso si, tal vez no es una distribucion normal perfecta
+#pero se acercan a la linea punteada y es normal que las orillas no se acerquen tanto a la linea punteada
+
+#En la grafica del levarage con los outliers nos indica que tanto nos "jala" los resultados del modelo, asi podemos saber si nuestros valores son independientes o no, (poco outliers significativos : indeoendiente)
+#en este caso no hay grafica, podemos decir que no hay outliers y por tanto los valores son independientes entre los errores y las observaciones
+
+
+TukeyHSD(analisis_v_ansiedad) #Con las pruebas Post-hoc nos ayuda a saber cual es la Ha debemos aceptar
+#El resultado que nos arroja son las comparaciones en pares entre cada promedio de ansiedad de replicas por combinacion 
+
+#En este caso los resultados que obtenemos son que la combinaciones adulto:mujer e infante:hombre su valor de P adj es mayor a 0.05, por lo que podemos decir que son iguales y sus promedios no difieren. 
+#lo mismo sucede con la combinaci?n infante:mujer y joven:hombre, tienen un valor de P adj de 0.42 mayor a 0.05, lo mismo
+#sucede con la combinaciones joven:mujer y joven:hombre, con un valor de 0.47, por lo que podemos decir que estos promedios de combinaciones son iguales entre si y estos no difieren. 
+
+
+resumen_ansiedad_av <- summarySE(base_ansiedad, measurevar = "ansiedad", groupvars = c("genero","edad")) #se debe de hacer el resumen, con la funcion summarySE que sale del paquete Rmisc, que se cargo previamente, para obtener los promedios de la variable de respuesta en este caso ansiedad y obtener los intervalos de confianza, desviacion estandar etc.
+resumen_ansiedad_av ## se imprime el objeto donde se coloco el resumen para comprobar que si de guardo correctamente
+
+#se coloca un objeto para colocar nuestra grafica, que sera hecha por ggplot, que viene del paquete ggplot2, este se cargo al incio del script
+
+graf_bar_edad <- ggplot(resumen_ansiedad_av, aes(x=edad, y=ansiedad, fill=genero)) + #se indica que se va a hacer una grafica, se coloca la funcion ggplot y su primero argumento es de donde va a obtener los datos, en este caso del resumen, su segundo argumento aes, indica como queremos la grafica, que factores en las X (variable independiente edad) y que en Y (variable dependiente ansiedad), se coloca fill=genero para que nuestras graficas de barras las separe por genero (dentro de cada edad)
+  geom_bar(position=position_dodge(), stat="identity") + #se indica la funcion de hacer la grafica de barras, como la informacion de aes ya esta en la primera capa no e snecesario colocarla de nuevo, solo que se coloca stat, para que haga la barra del valor Y (ansiedad)
+  geom_errorbar(aes(ymin=ansiedad-ci, ymax=ansiedad+ci), width=.2,position=position_dodge(.9)) + #se colocan las barras de error que estaran dadas por los intervalos ded confianza, de igual manera el grosor de estas
+annotate("text", x = 1.2, y = 9.2, label = "a", size = 4) +
+  annotate("text", x = 1.75, y = 8, label = "a", size = 4) +
+  annotate("text", x = 2.2, y = 4.8, label = "b", size = 4) +
+             annotate("text", x = 2.75, y = 5.2, label = "bc", size = 4) + ####se colocan las letras para identificar cuales son los promedios que son iguales unos a otros segun la prueba post hoc
+  annotate("text", x = 3.2, y = 6.3, label = "c", size = 4)
+   graf_bar_edad #se imprime el objeto para hacer la visualizacion de la grafica
+
+   
+   #realizamos otra grafica de barras pero esta vez sera con la variable independiente de genero y sera dividida por la edad
+graf_bar_genero <- ggplot(resumen_ansiedad_av, aes(x=genero, y=ansiedad, fill=edad)) + #se realiza lo mismo que la anterior, de la misma base de datos, solo que en X= ira genero y en fill= va a ir edad
+  geom_bar(position=position_dodge(), stat="identity") + #se realiza lo mismo que en la anterior grafica anterior
+  geom_errorbar(aes(ymin=ansiedad-ci, ymax=ansiedad+ci), width=.2, position=position_dodge(.9)) + #se establece las barras de error con los valores del intervalo de confianza.
+annotate("text", x = 1.7, y = 9.2, label = "a", size = 4) +
+  annotate("text", x = 1, y = 8, label = "a", size = 4)+
+  annotate("text", x = 2, y = 4.8, label = "b", size = 4) + #colocamos las letras con el fin de identificar aquellos promedios por combinacion que no difieren entre si 
+  annotate("text", x = 1.3, y = 5.2, label = "bc", size = 4)+
+  annotate("text", x = 2.3, y = 6.2, label = "c", size = 4)
+graf_bar_genero #imprimimos el objeto para observar que esta correcta.
+
+
+
+resumen_ansiedad_av_nu <- resumen_ansiedad_av
+resumen_ansiedad_av_nu$edad <- numeric(resumen_ansiedad_av_nu$edad) ####Con esto se intenta hacer una base de datos similar, solo que se cambiaria la interoretacion de edad, a como un valor numerico para que logre
+#salir la grafica de puntos de interacci?n.
+
+######  Para la grafica de interacciones, subiremos una base de datos muy similar, solo que ahora pondremos en la edad en vez de caracteres, seran numeros, donde cada numero 
+######  indicara un nivel para la edad, en el orden de 1,2 y 3 (infantes, jovenes y adultos respectivamente)
+#La base de datos se llamara: base_ansiedad_grafica
+
+base_ansiedad_grafica ##imprimimos el objeto para ver que se haya cargado correctamente
+
+resumen_grafica_puntos <- summarySE(base_ansiedad_grafica, measurevar = "ansiedad", groupvars = c("genero","edad")) #se debe de volver a hacer el resumen para 
+#usarlo en la grafica de puntos que se hara
+resumen_grafica_puntos #se imprime el objeto para saber que esta bien
+
+
+
+ grafica_puntos_ansiedad <- ggplot(resumen_grafica_puntos, aes(x= edad, y= ansiedad, colour=genero)) + #la grafica la colocamos en un objeto que indique que es la grafica de puntos, la funcion ggplot, colocamos el primer argumento que es de donde se quiere obtener la informacion para la grafica, el segundo argumento aes, que nos indica como queremos la grafica, donde en X estara la edad, y en Y la ansiedad, se coloca colour=genero para que pueda separar las graficas por genero
+  geom_errorbar(aes(ymin=ansiedad-ci, ymax=ansiedad+ci), width=.1, position= position_dodge(0.1)) + #se coloca las barras de error, donde s eindicara que el valor maximo y minimo estara dado por la suma y la resta (respectivamente) del intervalo de confianza se coloca position dodge para evitar que se sobrepongan las graficas
+  geom_line(position= position_dodge(0.1)) + #se coloca la funcion geom_line que nos graficara como su nombre dice lineas que unan los puntos, no hace falta colocar aes, por que se toma en cuenta los que ya estan en la primera capa
+  geom_point(position= position_dodge(0.1)) +#la funcion geom_point, nos colocara los puntos donde estaran los promedios de las combinaciones y estos seran unidos por las lineas que pusimos anteriormente, junto con este estan las barras de error de cada promedio y su combinacion, igual solo se pone position dodge, pues toma la informacion de los valores de la primera capa
+  annotate("text", x= 1, y= 8 , label = "a", size=4)+
+   annotate("text",x = 3, y = 9, label = "a", size=4)+
+   annotate("text", x = 1, y = 4.8, label = "b", size = 4) +
+   annotate("text",x = 2, y = 5.2, label = "bc", size = 4) + #### por medio de letras hacemos la marca de aquellas que aparecieron en la prueba de Tukey que eran iguales.
+   annotate("text", x = 2, y = 6.2, label= "c", size = 4)
+grafica_puntos_ansiedad #se imprime el objeto para visualizar la grafica.
+
+
